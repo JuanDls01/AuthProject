@@ -1,5 +1,5 @@
 import { Path, UseFormRegister } from 'react-hook-form';
-import { LoginFormValues } from '../loginForm'
+import { LoginFormValues } from '../LoginForm';
 
 interface InputProps {
     type: string,

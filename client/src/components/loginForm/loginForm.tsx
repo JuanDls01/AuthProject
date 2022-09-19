@@ -1,11 +1,10 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup'
 import { useForm, SubmitHandler } from 'react-hook-form';
 
 import { useAppDispatch } from '../../redux/hooks';
-import { createUser, updateUser } from '../../redux/states/user';
+import { createUser } from '../../redux/states/user';
 import { getUser } from '../../services';
 
 import InputLogin from './ui/inputLogin';
@@ -22,7 +21,7 @@ const validationSchema = Yup.object().shape({
   password: Yup.string().required('Required').min(6, 'Must be at least 6 characters')
 })
 
-function LoginForm() {
+function LoginForm(): JSX.Element {
   const dispatch = useAppDispatch();
 
   // react-hook-form
@@ -40,8 +39,9 @@ function LoginForm() {
   // Login submit
   const login: SubmitHandler<LoginFormValues> = async (data) => {
     try {
+      console.log('loginerror')
       const result = await getUser(data)
-      dispatch(updateUser(result))
+      dispatch(createUser(result))
     } catch (error) {
       console.log(error)
     }
@@ -80,8 +80,8 @@ function LoginForm() {
         />
         <SubmitBttn type='submit'/>
       </form>
-      
     </div>
   )
 }
-export default LoginForm
+
+export default LoginForm;
