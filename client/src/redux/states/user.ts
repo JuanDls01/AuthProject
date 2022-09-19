@@ -1,12 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { UserInfo } from "../../models";
+import { Roles, UserInfo } from "../../models";
 import { clearLocalStorage, persistLocalStorage } from "../../utilities";
 
 export const EmptyUserState: UserInfo = {
     id: 0,
     name: '',
-    email: ''
+    email: '',
+    rol: Roles.USER,
 };
 
 export const UserKey = 'user'
