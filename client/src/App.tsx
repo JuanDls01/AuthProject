@@ -1,8 +1,10 @@
 import { Provider } from 'react-redux';
 import store from './redux/store';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { Dashboard } from './pages/Dashboard'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { Private } from './pages/Private'
 import { Login } from './pages/Login'
+import { PrivateRoutes, PublicRoutes } from './models';
+import { AuthGuard } from './guards';
 
 function App() {
   return (
@@ -10,9 +12,12 @@ function App() {
       <Provider store={store}>
         <BrowserRouter>
           <Routes>
-            <Route path='/' element={<Login />} />
+            <Route path='/' element={<Navigate to={PrivateRoutes.PRIVATE} />} />
             <Route path='*' element={<>NOT FOUND</>} />
-            <Route path='/dashboard' element={<Dashboard />} />
+            <Route path={PublicRoutes.LOGIN} element={<Login />} />
+            <Route element={<AuthGuard />}>
+              <Route path={`${PrivateRoutes.DASHBOARD}/*`} element={<Private />} />
+            </Route>
           </Routes>
         </BrowserRouter>
       </Provider>

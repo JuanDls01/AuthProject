@@ -1,6 +1,6 @@
 function Dashboard() {
   return (
-    <div>Hola este es el Dashboard</div>
+    <div>Dashboard</div>
   )
 }
 export default Dashboard
