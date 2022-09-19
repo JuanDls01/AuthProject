@@ -1,10 +1,16 @@
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup'
 import { useForm, SubmitHandler } from 'react-hook-form';
 
+import { useAppDispatch } from '../../redux/hooks';
+import { createUser, updateUser } from '../../redux/states/user';
+import { getUser } from '../../services';
+
 import InputLogin from './ui/inputLogin';
 import SubmitBttn from './ui/SubmitBttn';
+
 
 export interface LoginFormValues {
   email: string
@@ -17,6 +23,9 @@ const validationSchema = Yup.object().shape({
 })
 
 function LoginForm() {
+  const dispatch = useAppDispatch();
+
+  // react-hook-form
   const { 
     register,
     handleSubmit, 
@@ -28,6 +37,17 @@ function LoginForm() {
     resolver: yupResolver(validationSchema),
   })
 
+  // Login submit
+  const login: SubmitHandler<LoginFormValues> = async (data) => {
+    try {
+      const result = await getUser(data)
+      dispatch(updateUser(result))
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  // Reset Form
   useEffect(() => {
     if (formState.isSubmitSuccessful) {
       reset({
@@ -41,7 +61,7 @@ function LoginForm() {
 
   return (
     <div>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(login)}>
         <InputLogin 
           type='email'
           name='email'
