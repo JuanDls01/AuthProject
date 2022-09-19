@@ -9,6 +9,9 @@ import { getUser } from '../../services';
 
 import InputLogin from './ui/inputLogin';
 import SubmitBttn from './ui/SubmitBttn';
+import { useNavigate } from 'react-router-dom';
+import { Private } from '../../pages/Private';
+import { PrivateRoutes } from '../../models';
 
 
 export interface LoginFormValues {
@@ -23,6 +26,7 @@ const validationSchema = Yup.object().shape({
 
 function LoginForm(): JSX.Element {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   // react-hook-form
   const { 
@@ -39,9 +43,9 @@ function LoginForm(): JSX.Element {
   // Login submit
   const login: SubmitHandler<LoginFormValues> = async (data) => {
     try {
-      console.log('loginerror')
-      const result = await getUser(data)
-      dispatch(createUser(result))
+      const result = await getUser(data);
+      dispatch(createUser(result));
+      navigate(`${PrivateRoutes.PRIVATE}`, {replace: true});
     } catch (error) {
       console.log(error)
     }
