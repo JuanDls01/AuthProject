@@ -31,7 +31,7 @@ DJANGO_APPS = [
 ]
 
 PROJECT_APPS = [
-
+    'apps.user',
 ]
 ECOMMERCE_APPS = [
 
@@ -107,6 +107,7 @@ CORS_ORIGIN_WHITELIST = [
     'http://localhost:8000',
     'http://127.0.0.1:8000',
     'http://127.0.0.1:3000',
+    'http://127.0.0.1:5173',
 ]
 # Sitios que pueden comunicarse con la aplicación de Django.
 CSRF_TRUSTED_ORIGINS = [
@@ -114,6 +115,7 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8000',
     'http://127.0.0.1:8000',
     'http://127.0.0.1:3000',
+    'http://127.0.0.1:5173',
 ]
 
 
