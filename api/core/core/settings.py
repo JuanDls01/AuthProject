@@ -38,6 +38,7 @@ ECOMMERCE_APPS = [
 ]
 # Donde ubicamos todo lo que instalamos de requirements.
 THIRD_PARTY_APPS = [
+    'jwt',
     'corsheaders',
     'rest_framework',
     'djoser',

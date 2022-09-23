@@ -15,6 +15,12 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 
+class UserJWTSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserAccount
+        fields = ['first_name', 'email', 'last_name', 'id', 'group']
+
+
 class CustomUserSerializer(serializers.ModelSerializer):
     group = serializers.StringRelatedField()
 
@@ -25,6 +31,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
             'email',
             'first_name',
             'last_name',
+            'is_superuser',
             'group',
         ]
 
@@ -34,7 +41,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
 
         # Add custom claims
-        token['first_name'] = user.first_name
+        token['email'] = user.email
         # ...
 
         return token

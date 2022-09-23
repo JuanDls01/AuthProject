@@ -1,9 +1,9 @@
 import axios from 'axios'
-import { LoginFormValues } from '../components/loginForm/LoginForm';
-import { UserInfo } from '../models';
+import { LocalStorageKey, Tokens, UserInfo } from '../models';
+import { LoginFormValues } from '../pages/Login/models';
 
-export const getUser = async (dataUser: LoginFormValues) => {
-    const json = await axios.post('http://localhost:8000/user/login', dataUser)
-    const userInfo: UserInfo = json.data
-    return userInfo
+export const loginUser = async (dataUser: LoginFormValues) => {
+    const json = await axios.post('api/token/', dataUser)
+    const tokens: Tokens = json.data
+    return tokens
 }

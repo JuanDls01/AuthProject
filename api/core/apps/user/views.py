@@ -1,13 +1,19 @@
+from base64 import b64decode
 from django.contrib.auth import authenticate
+import jwt
+
 from rest_framework import generics
 from rest_framework import status
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
 
 from apps.user.models import UserAccount
 from apps.user.serializers import (
-    UserSerializer, CustomUserSerializer, CustomTokenObtainPairSerializer)
+    UserSerializer, CustomUserSerializer, CustomTokenObtainPairSerializer, UserJWTSerializer)
 
 
 class UserCreateAPIView(generics.CreateAPIView):
@@ -26,36 +32,15 @@ class UserCreateAPIView(generics.CreateAPIView):
         }, status.HTTP_400_BAD_REQUEST)
 
 
-class LoginAPIView(TokenObtainPairView):
-    serializer_class = CustomTokenObtainPairSerializer
+class userInfoAPIView(APIView):
+    serializer_class = CustomUserSerializer
+    permission_classes = [IsAuthenticated]
 
-    def post(self, request, *args, **kwargs):
-        email = request.data.get('email', '')
-        password = request.data.get('password', '')
-        user = authenticate(
-            email=email,
-            password=password
-        )
-        print(user)
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        serializer = self.serializer_class(user)
 
-        if user:
-            login_serializer = self.serializer_class(data=request.data)
-            if login_serializer.is_valid():
-                user_serializer = CustomUserSerializer(user)
-                return Response({
-                    'token': login_serializer.validated_data.get('access'),
-                    'refresh-token': login_serializer.validated_data.get('refresh'),
-                    'user': user_serializer.data,
-                    'message': 'Inicio de sesión exitosa'
-                }, status=status.HTTP_200_OK)
-            else:
-                return Response({
-                    'error': 'Contraseña o nombre de usuario incorrectos'
-                }, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            return Response({
-                'error': 'Usuario no registrado'
-            }, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.data)
 
 
 class ListUsersAPIView(generics.ListAPIView):

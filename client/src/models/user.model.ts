@@ -1,8 +1,11 @@
 import { Roles } from "./roles";
 
 export interface UserInfo {
+    // token: string,
+    // refresh_token: string,
     id: number;
-    name: string;
     email: string;
-    rol: Roles;
+    first_name: string;
+    last_name: string;
+    group: Roles;
 }
