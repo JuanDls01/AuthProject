@@ -2,17 +2,12 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
-import { useAsync } from "../hooks";
-import { AxiosResponse } from "axios";
-import {
-  LocalStorageKey,
-  PrivateRoutes,
-  PublicRoutes,
-  Tokens,
-  UserInfo,
-} from "../models";
+
+import { LocalStorageKey, PublicRoutes, Tokens } from "../models";
+
 import { createUser } from "../redux/states/user";
 import { AppStore } from "../redux/store";
+
 import { getUserInfoWithJWT } from "../services";
 
 interface Props {

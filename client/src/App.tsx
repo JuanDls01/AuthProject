@@ -13,34 +13,25 @@ import {
 
 import { RoutesWithNotFound } from "./utilities";
 import { AuthGuard, RolGuard } from "./guards";
-import { getUserInfoWithJWT } from "./services";
-import { useDispatch } from "react-redux";
-import { createUser } from "./redux/states/user";
-// import { Dashboard } from './pages/Private';
 
 const Login = lazy(() => import("./pages/Login/Login"));
 const Private = lazy(() => import("./pages/Private/Private"));
 const Dashboard = lazy(() => import("./pages/Private/Dashboard/Dashboard"));
 
 function App() {
-  const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   const tokens: Tokens | null = localStorage.getItem(LocalStorageKey.TOKENS) ? JSON.parse(localStorage.getItem(LocalStorageKey.TOKENS) as string) : null;
-  //   tokens?
-  //   console.log("llegamos a entrar");
-  //   const userInfo: Promise<UserInfo> = getUserInfoWithJWT();
-  //   dispatch(createUser(userInfo));
-  // }, [tokens]);
-
   return (
     <div className='App'>
       <Suspense fallback={<>CARGANDO</>}>
         {/* <Provider store={store}> */}
         <BrowserRouter>
           <RoutesWithNotFound>
+            {/* By default we send the user to the private routes */}
             <Route path='/' element={<Navigate to={PrivateRoutes.PRIVATE} />} />
+
+            {/* Public Routes: */}
             <Route path={PublicRoutes.LOGIN} element={<Login />} />
+
+            {/* Private Routes: */}
             <Route element={<AuthGuard privateValidation={true} />}>
               <Route
                 path={`${PrivateRoutes.PRIVATE}/*`}

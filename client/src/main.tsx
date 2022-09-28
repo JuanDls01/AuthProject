@@ -8,14 +8,17 @@ import store from "./redux/store";
 
 // We will use this for the deploy:
 import axios from "axios";
+import { AuthProvider } from "./context";
 const baseURL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3001";
 axios.defaults.baseURL = baseURL;
 // --------------------------------
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
+    <AuthProvider>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </AuthProvider>
   </React.StrictMode>
 );
