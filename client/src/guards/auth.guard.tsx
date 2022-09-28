@@ -1,47 +1,30 @@
-import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
-
-import { LocalStorageKey, PublicRoutes, Tokens } from "../models";
-
-import { createUser } from "../redux/states/user";
 import { AppStore } from "../redux/store";
-
-import { getUserInfoWithJWT } from "../services";
+import { PublicRoutes, Roles } from "../models";
 
 interface Props {
-  privateValidation: boolean;
+  allowedRol?: Roles;
 }
 
 const PrivateValidationFragment = <Outlet />;
 const PublicValidationFragment = <Navigate replace to={PublicRoutes.LOGIN} />;
 
-export const AuthGuard = ({ privateValidation }: Props) => {
+export const AuthGuard = ({ allowedRol }: Props) => {
   // Se ejecuta cada vez que se intente ingresar a una ruta privada, y verifica que en el store haya un usuario,
-  const dispatch = useDispatch();
-  const [loading, setLoading] = useState(true);
-
   const userState = useSelector((store: AppStore) => store.user);
-  useEffect(() => {
-    setLoading(true);
-    const tokens: Tokens = localStorage.getItem(LocalStorageKey.TOKENS)
-      ? JSON.parse(localStorage.getItem(LocalStorageKey.TOKENS) as string)
-      : null;
-    getUserInfoWithJWT(tokens).then((result) => {
-      dispatch(createUser(result));
 
-      setLoading(false);
-    });
-  }, [dispatch]);
-
-  console.log(userState, !loading);
-  return !loading && !userState.first_name ? (
-    <Navigate replace to={PublicRoutes.LOGIN} />
-  ) : privateValidation ? (
-    PrivateValidationFragment
+  console.log("authguard", userState);
+  return allowedRol ? (
+    userState.group === allowedRol ? (
+      <Outlet />
+    ) : (
+      <Navigate replace to={PublicRoutes.LOGIN} />
+    )
+  ) : userState.first_name ? (
+    <Outlet />
   ) : (
-    PublicValidationFragment
+    <Navigate replace to={PublicRoutes.LOGIN} />
   );
 };
 

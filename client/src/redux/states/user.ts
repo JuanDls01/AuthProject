@@ -32,7 +32,7 @@ export const userSlice = createSlice({
             return result
         },
         resetUser: () => {
-            clearLocalStorage(LocalStorageKey.TOKENS);
+            // clearLocalStorage(LocalStorageKey.TOKENS);
             // clearLocalStorage(LocalStorageKey.REFRESH_TOKEN)
             return EmptyUserState
         }

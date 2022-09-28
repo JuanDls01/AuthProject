@@ -23,7 +23,7 @@ const validationSchema = Yup.object().shape({
 });
 
 function LoginForm(): JSX.Element {
-  const { setAccess } = useAuthContext();
+  const { access, setAccess } = useAuthContext();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -48,10 +48,11 @@ function LoginForm(): JSX.Element {
       result.access && setAccess(result.access);
 
       // Gurado el refresh token en localStorage:
-      persistLocalStorage(LocalStorageKey.TOKENS, result);
+      console.log(result.refresh);
+      persistLocalStorage(LocalStorageKey.REFRESH_TOKEN, result.refresh);
 
       console.log("guarde los tokens");
-      navigate(`/${PrivateRoutes.PRIVATE}`, { replace: true });
+      navigate(`/`, { replace: true });
     } catch (error) {
       console.log(error);
     }
