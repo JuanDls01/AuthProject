@@ -1,18 +1,21 @@
-import { createContext, useContext, useState } from "react";
-import { LocalStorageKey } from "../models";
+import React, { createContext, useContext, useState } from "react";
 
-const AuthContext = createContext({});
+interface AuthContextInterface {
+  access: string;
+  setAccess: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const AuthContext = createContext<AuthContextInterface | undefined>(undefined);
+
 interface Props {
   children: React.ReactNode;
 }
 
 const AuthProvider = ({ children }: Props) => {
-  const [access, setAccess] = useState({});
-  const [persist, setPersist] = useState(
-    JSON.parse(localStorage.getItem(LocalStorageKey.TOKENS) as string) || false
-  );
+  const [access, setAccess] = useState("");
+
   return (
-    <AuthContext.Provider value={{ access, setAccess, persist, setPersist }}>
+    <AuthContext.Provider value={{ access, setAccess }}>
       {children}
     </AuthContext.Provider>
   );

@@ -13,6 +13,7 @@ import { InputForm, SubmitFormBttn } from "../../../components";
 import { LocalStorageKey, PrivateRoutes, Tokens } from "../../../models";
 import { LoginFormValues } from "../models";
 import { persistLocalStorage } from "../../../utilities";
+import { useAuthContext } from "../../../context/AuthProvider.context";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required("Required").email("Invalid email"),
@@ -22,6 +23,7 @@ const validationSchema = Yup.object().shape({
 });
 
 function LoginForm(): JSX.Element {
+  const { setAccess } = useAuthContext();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -42,7 +44,12 @@ function LoginForm(): JSX.Element {
     try {
       const result: Tokens = await loginUser(data);
       console.log("Me trajo los tokens", result);
+      // Guardo el access token en context:
+      result.access && setAccess(result.access);
+
+      // Gurado el refresh token en localStorage:
       persistLocalStorage(LocalStorageKey.TOKENS, result);
+
       console.log("guarde los tokens");
       navigate(`/${PrivateRoutes.PRIVATE}`, { replace: true });
     } catch (error) {
