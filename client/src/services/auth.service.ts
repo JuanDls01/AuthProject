@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { LocalStorageKey, Tokens, UserInfo } from '../models';
+import { Tokens } from '../models';
 import { LoginFormValues } from '../pages/Login/models';
 
 export const loginUser = async (dataUser: LoginFormValues) => {

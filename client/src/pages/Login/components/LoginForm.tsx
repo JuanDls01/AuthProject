@@ -12,7 +12,8 @@ import { InputForm, SubmitFormBttn } from "../../../components";
 
 import { LocalStorageKey, PrivateRoutes, Tokens } from "../../../models";
 import { LoginFormValues } from "../models";
-import { persistLocalStorage } from "../../../utilities";
+import { clearLocalStorage, persistLocalStorage } from "../../../utilities";
+import { useAuthContext } from "../../../context/AuthProvider.context";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required("Required").email("Invalid email"),
@@ -22,7 +23,7 @@ const validationSchema = Yup.object().shape({
 });
 
 function LoginForm(): JSX.Element {
-  const dispatch = useAppDispatch();
+  const { setAccess } = useAuthContext();
   const navigate = useNavigate();
 
   // react-hook-form
@@ -42,13 +43,25 @@ function LoginForm(): JSX.Element {
     try {
       const result: Tokens = await loginUser(data);
       console.log("Me trajo los tokens", result);
-      persistLocalStorage(LocalStorageKey.TOKENS, result);
+      // Guardo el access token en context:
+      result.access && setAccess(result.access);
+
+      // Gurado el refresh token en localStorage:
+      console.log(result.refresh);
+      result.refresh &&
+        persistLocalStorage(LocalStorageKey.REFRESH_TOKEN, result.refresh);
+
       console.log("guarde los tokens");
-      navigate(`/${PrivateRoutes.PRIVATE}`, { replace: true });
+      navigate(`/`, { replace: true });
     } catch (error) {
       console.log(error);
     }
   };
+
+  // clear localStorage
+  useEffect(() => {
+    clearLocalStorage(LocalStorageKey.REFRESH_TOKEN);
+  }, []);
 
   // Reset Form
   useEffect(() => {

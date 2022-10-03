@@ -1,4 +1,7 @@
 export interface Tokens {
-    access: string | null,
-    refresh: string | null,
+    access: access,
+    refresh: refresh
 }
+
+export type access = string;
+export type refresh = string;
