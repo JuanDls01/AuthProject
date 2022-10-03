@@ -12,7 +12,7 @@ interface Props {
   children: JSX.Element[] | JSX.Element;
 }
 
-const PersistAccess = () => {
+const PersistAccess2 = () => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -77,10 +77,10 @@ const PersistAccess = () => {
       {isLoading ? (
         <>CARGANDO PERSIST ACCESS</>
       ) : (
-        // <Navigate to={PrivateRoutes.PRIVATE} />
+        // { children }
         <Outlet />
       )}
     </>
   );
 };
-export default PersistAccess;
+export default PersistAccess2;

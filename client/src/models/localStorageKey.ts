@@ -1,4 +1,3 @@
 export const LocalStorageKey = {
-    REFRESH_TOKEN: 'refresh_token',
-    USER: 'user',
+    REFRESH_TOKEN: 'refresh_token'
 }

@@ -12,7 +12,7 @@ import { InputForm, SubmitFormBttn } from "../../../components";
 
 import { LocalStorageKey, PrivateRoutes, Tokens } from "../../../models";
 import { LoginFormValues } from "../models";
-import { persistLocalStorage } from "../../../utilities";
+import { clearLocalStorage, persistLocalStorage } from "../../../utilities";
 import { useAuthContext } from "../../../context/AuthProvider.context";
 
 const validationSchema = Yup.object().shape({
@@ -23,8 +23,7 @@ const validationSchema = Yup.object().shape({
 });
 
 function LoginForm(): JSX.Element {
-  const { access, setAccess } = useAuthContext();
-  const dispatch = useAppDispatch();
+  const { setAccess } = useAuthContext();
   const navigate = useNavigate();
 
   // react-hook-form
@@ -49,7 +48,8 @@ function LoginForm(): JSX.Element {
 
       // Gurado el refresh token en localStorage:
       console.log(result.refresh);
-      persistLocalStorage(LocalStorageKey.REFRESH_TOKEN, result.refresh);
+      result.refresh &&
+        persistLocalStorage(LocalStorageKey.REFRESH_TOKEN, result.refresh);
 
       console.log("guarde los tokens");
       navigate(`/`, { replace: true });
@@ -57,6 +57,11 @@ function LoginForm(): JSX.Element {
       console.log(error);
     }
   };
+
+  // clear localStorage
+  useEffect(() => {
+    clearLocalStorage(LocalStorageKey.REFRESH_TOKEN);
+  }, []);
 
   // Reset Form
   useEffect(() => {
