@@ -7,7 +7,7 @@ import { AuthGuard, RolGuard } from "./guards";
 import { Layout } from "./components";
 
 const Login = lazy(() => import("./pages/Login/Login"));
-const Private = lazy(() => import("./pages/Private/Private"));
+const Home = lazy(() => import("./pages/Private/Home/Home"));
 const Dashboard = lazy(() => import("./pages/Private/Dashboard/Dashboard"));
 
 function App() {
@@ -18,11 +18,10 @@ function App() {
           <RoutesWithNotFound>
             <Route element={<Layout />}>
               <Route element={<PersistAccess />}>
-                {/* <Route path='/' element={<Layout />}> */}
                 {/* By default we send the user to the private routes */}
                 <Route
                   path='/'
-                  element={<Navigate to={PrivateRoutes.PRIVATE} />}
+                  element={<Navigate to={PrivateRoutes.HOME} />}
                 />
 
                 {/* Public Routes: */}
@@ -30,16 +29,14 @@ function App() {
                 {/* <Route path={PublicRoutes.REGISTER} element={<Register />} /> */}
 
                 {/* Private Routes: */}
-                {/* <Route element={<PersistAccess />}> */}
                 <Route element={<AuthGuard />}>
                   <Route
-                    path={`${PrivateRoutes.PRIVATE}/*`}
-                    element={<Private />}
+                    path={PrivateRoutes.DASHBOARD}
+                    element={<Dashboard />}
                   />
+                  <Route path={PrivateRoutes.HOME} element={<Home />} />
                 </Route>
-                {/* </Route> */}
               </Route>
-              {/* </Route> */}
             </Route>
           </RoutesWithNotFound>
         </BrowserRouter>

@@ -7,7 +7,7 @@ const Navbar = () => {
       <ul>
         <li>
           <NavLink
-            to={`${PrivateRoutes.PRIVATE}/${PrivateRoutes.HOME}`}
+            to={`${PrivateRoutes.HOME}`}
             className={({ isActive }) =>
               isActive ? `text-blue-400` : `text-red-400`
             }
@@ -17,7 +17,7 @@ const Navbar = () => {
         </li>
         <li>
           <NavLink
-            to={`${PrivateRoutes.PRIVATE}/${PrivateRoutes.DASHBOARD}`}
+            to={`${PrivateRoutes.DASHBOARD}`}
             className={({ isActive }) =>
               isActive ? `text-blue-400` : `text-red-400`
             }

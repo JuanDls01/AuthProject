@@ -34,16 +34,18 @@ const PersistAccess2 = () => {
         await refreshToken(refresh).then((newAccess) => {
           console.log("newAccess", newAccess);
           setAccess(newAccess);
+          saveUserInfoOnRedux(newAccess);
         });
       } catch (err) {
         console.log("verifyRefreshToken Error", err);
       } finally {
+        console.log("finallyrefresh");
         isMounted && setIsLoading(false);
         console.log(isLoading);
       }
     };
 
-    const saveUserInfoOnRedux = async () => {
+    const saveUserInfoOnRedux = async (access: string) => {
       try {
         console.log(access);
         await getUserInfoWithJWT(access).then((res) => {
@@ -53,6 +55,7 @@ const PersistAccess2 = () => {
         // Si el error es porque expiro el token, probar con verifyRefreshToken()
         console.log("saveUserInfoOnRedux Error", err);
       } finally {
+        console.log("finallySave");
         isMounted && setIsLoading(false);
         console.log(isLoading);
       }
@@ -60,7 +63,7 @@ const PersistAccess2 = () => {
 
     // Si no tengo usuario y tengo access token -> traigo info del usuario
     !userState.first_name && access
-      ? saveUserInfoOnRedux()
+      ? saveUserInfoOnRedux(access)
       : // Si no tengo access y tengo refresh -> pruebo refrescando el token
       !access && refresh
       ? verifyRefreshToken(refresh)
@@ -68,6 +71,7 @@ const PersistAccess2 = () => {
         setIsLoading(false);
 
     return () => {
+      setIsLoading(false);
       isMounted = false;
     };
   }, [access]);
@@ -77,10 +81,11 @@ const PersistAccess2 = () => {
       {isLoading ? (
         <>CARGANDO PERSIST ACCESS</>
       ) : (
-        // { children }
+        // <Navigate to={PrivateRoutes.PRIVATE} />
         <Outlet />
       )}
     </>
   );
 };
+
 export default PersistAccess2;

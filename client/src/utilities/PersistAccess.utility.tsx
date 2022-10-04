@@ -28,49 +28,30 @@ const PersistAccess = () => {
   useEffect(() => {
     let isMounted = true;
 
-    const verifyRefreshToken = async (refresh: string) => {
+    const verifyRefreshToken = async () => {
       try {
-        console.log("refresh", refresh);
-        await refreshToken(refresh).then((newAccess) => {
-          console.log("newAccess", newAccess);
-          setAccess(newAccess);
-        });
+        refresh &&
+          (await refreshToken(refresh)
+            .then((newAccess) => {
+              setAccess(newAccess);
+              return getUserInfoWithJWT(newAccess);
+            })
+            .then((user) => {
+              dispatch(createUser(user));
+            }));
       } catch (err) {
-        console.log("verifyRefreshToken Error", err);
+        console.log(err);
       } finally {
         isMounted && setIsLoading(false);
-        console.log(isLoading);
       }
     };
 
-    const saveUserInfoOnRedux = async () => {
-      try {
-        console.log(access);
-        await getUserInfoWithJWT(access).then((res) => {
-          dispatch(createUser(res));
-        });
-      } catch (err) {
-        // Si el error es porque expiro el token, probar con verifyRefreshToken()
-        console.log("saveUserInfoOnRedux Error", err);
-      } finally {
-        isMounted && setIsLoading(false);
-        console.log(isLoading);
-      }
-    };
-
-    // Si no tengo usuario y tengo access token -> traigo info del usuario
-    !userState.first_name && access
-      ? saveUserInfoOnRedux()
-      : // Si no tengo access y tengo refresh -> pruebo refrescando el token
-      !access && refresh
-      ? verifyRefreshToken(refresh)
-      : // Si no tengo usuario, access ni refresh -> no hago nada chau!
-        setIsLoading(false);
+    access ? setIsLoading(false) : verifyRefreshToken();
 
     return () => {
       isMounted = false;
     };
-  }, [access]);
+  }, []);
 
   return (
     <>

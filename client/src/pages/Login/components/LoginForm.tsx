@@ -6,7 +6,7 @@ import * as Yup from "yup";
 
 import { useAppDispatch } from "../../../redux/hooks";
 import { createUser } from "../../../redux/states/user";
-import { loginUser } from "../../../services";
+import { getUserInfoWithJWT, loginUser } from "../../../services";
 
 import { InputForm, SubmitFormBttn } from "../../../components";
 
@@ -14,6 +14,7 @@ import { LocalStorageKey, PrivateRoutes, Tokens } from "../../../models";
 import { LoginFormValues } from "../models";
 import { clearLocalStorage, persistLocalStorage } from "../../../utilities";
 import { useAuthContext } from "../../../context/AuthProvider.context";
+import { useDispatch } from "react-redux";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required("Required").email("Invalid email"),
@@ -25,6 +26,7 @@ const validationSchema = Yup.object().shape({
 function LoginForm(): JSX.Element {
   const { setAccess } = useAuthContext();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   // react-hook-form
   const {
@@ -46,13 +48,16 @@ function LoginForm(): JSX.Element {
       // Guardo el access token en context:
       result.access && setAccess(result.access);
 
-      // Gurado el refresh token en localStorage:
+      // Guardo el refresh token en localStorage:
       console.log(result.refresh);
       result.refresh &&
         persistLocalStorage(LocalStorageKey.REFRESH_TOKEN, result.refresh);
 
       console.log("guarde los tokens");
-      navigate(`/`, { replace: true });
+      getUserInfoWithJWT(result.access).then((user) => {
+        dispatch(createUser(user));
+        navigate(`/`, { replace: true });
+      });
     } catch (error) {
       console.log(error);
     }
